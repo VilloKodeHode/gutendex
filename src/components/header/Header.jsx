@@ -1,11 +1,28 @@
-export const Header = () => {
+export const Header = ({
+  setFilteredBooksTitle,
+  filteredBooksTitle,
+  filterBooks,
+}) => {
   return (
     <header>
-      <img src="" alt="" />
+      {/* <img src="" alt="" /> */}
       <div>
-        <label htmlFor="gutendex-search">Search</label>
-        <input id="gutendex-search" type="text" placeholder="Search" />
+        {/* <label htmlFor="gutendex-search">Search</label> */}
+        <input
+          onChange={(e) => filterBooks(e.target.value)}
+          id="gutendex-search"
+          type="text"
+          placeholder="Search"
+        />
       </div>
+      <select
+        name=""
+        id="">
+        <option value="/books?topic=children">All</option>
+        <option value="">Fiction</option>
+        <option value="">Non-Fiction</option>
+        <option value="">Mystery</option>
+      </select>
       <ul>
         <li>
           <button>1</button>
