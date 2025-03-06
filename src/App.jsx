@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [books, setBooks] = useState([]);
+  const [searchedBooks, setSearchedBooks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [categories, setCategories] = useState([]);
   const [filteredBooksTitle, setFilteredBooksTitle] = useState([]);
   const url = "https://gutendex.com/books/";
@@ -32,6 +34,27 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const fetchSearchedBook = async () => {
+      try {
+        const response = await fetch(
+          `https://gutendex.com//books?search=${searchTerm}`
+        );
+        const data = await response.json();
+        setSearchedBooks((data.results).filter((book)=> book.title.toLowerCase().match(searchTerm.toLowerCase())));
+        console.log(data.results);
+      } catch (error) {
+        console.error("Error fetching books:", error);
+      }
+    };
+    if (searchTerm) {
+      const delayDebounce = setTimeout(() => {
+        fetchSearchedBook();
+      }, 500);
+      return () => clearTimeout(delayDebounce);
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
     console.log(categories);
   }, [categories]);
 
@@ -48,6 +71,19 @@ function App() {
     console.log(filteredBooksTitle);
   }, [filteredBooksTitle]);
 
+  const fetchedBooks = (input) => {
+    setSearchedBooks(
+      searchedBooks.filter((book) =>
+        book.title.toLowerCase().match(input.toLowerCase())
+      )
+    );
+    console.log(input);
+  };
+
+  useEffect(() => {
+    console.log(searchedBooks);
+  }, [searchedBooks]);
+
   return (
     <>
       <Router>
@@ -55,6 +91,8 @@ function App() {
           filteredBooksTitle={filteredBooksTitle}
           setFilteredBooksTitle={setFilteredBooksTitle}
           filterBooks={filterBooks}
+          fetchedBooks={fetchedBooks}
+          setSearchTerm={setSearchTerm}
         />
         <main className="px-4 md:px-8 lg:px-12 xl:px-24">
           <Routes>
